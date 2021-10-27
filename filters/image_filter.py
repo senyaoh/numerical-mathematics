@@ -13,7 +13,7 @@ from skimage import io
 from matplotlib import pyplot as plt
 
 # Global Variables
-S = 2
+S = 1
 SIGMA_S = 3
 SIGMA_R = 75
 NUM_RANDOM_MATRIX = 100
@@ -69,7 +69,6 @@ def grayscale_gaussian_kernel(A: np.ndarray, s: int, sigma_r: float) -> float:
     return gaussian
 
 
-
 def test_cal_mean_median(size: int):
 
     mean_deviations = []
@@ -92,35 +91,6 @@ def test_cal_mean_median(size: int):
     print(f"Maximum mean deviation: {max(mean_deviations)}")
     print(f"Maximum median deviation: {max(median_deviations)}")
         
-
-# def apply_filter(A: np.ndarray, s: int, filter_func, sigma: float = None) -> np.ndarray:
-#     # Calculate filter size for a given s
-#     size = 2 * s + 1
-
-#     # Ensure matrix size is bigger than filter size
-#     if A.shape[0] < size or A.shape[1] < size:
-#         print("Image size is too small to filter. Lower the s value or find a bigger image.")
-#         return None
-
-#     # Pad the matrix with values of the edges
-#     padded = np.pad(A, pad_width=s, mode='edge')
-
-#     # Create an empty matrix with the same shape
-#     filtered = np.zeros(A.shape)
-    
-#     # Check if it's using the Gaussian filter and get the kernel
-#     if sigma:
-#         gaussian = gaussian_kernel(size, sigma)
-#     else:
-#         gaussian = None
-
-#     # Loop through each pixel and apply the given filter
-#     for i in range(0,A.shape[0]):
-#         for j in range(0,A.shape[1]):
-#             filtered[i,j] = filter_func(A=padded[i:i+size,j:j+size], kernel=gaussian)
-    
-#     return filtered
-
 def apply_filter(A: np.ndarray, s: int, filter_func, sigma_s: float = None, sigma_r: float = None) -> np.ndarray:
     # Calculate filter size for a given s
     size = 2 * s + 1
@@ -145,18 +115,16 @@ def apply_filter(A: np.ndarray, s: int, filter_func, sigma_s: float = None, sigm
     # Loop through each pixel and apply the given filter
     for i in range(0,A.shape[0]):
         for j in range(0,A.shape[1]):
+
             patch = padded[i:i+size,j:j+size]
+
+            # If use bilateral filter
             if sigma_r:
                 grayscale_gaussian = grayscale_gaussian_kernel(patch, s, sigma_r)
-                print("grayscale_gaussian")
-                print(grayscale_gaussian)
-                unnorm_kernel = np.multiply(kernel, grayscale_gaussian)
-                print("gaussian_kernel")
-                print(kernel)
-                print("unnorm_kernel")
-                print(unnorm_kernel)
+                gaussian = gaussian_kernel(size, sigma_s)
+                unnorm_kernel = gaussian * grayscale_gaussian
                 kernel = unnorm_kernel/unnorm_kernel.sum()
-            print(kernel)
+
             filtered[i,j] = filter_func(A=patch, kernel=kernel)
     
     return filtered
@@ -188,10 +156,10 @@ if __name__ == "__main__":
         plt.imshow(filtered_img)
         plt.show()
 
-        filtered_img = gaussian_filter(img, S, SIGMA_S)
+        gaussian_filtered_img = gaussian_filter(img, S, SIGMA_S)
         plt.gray()
         plt.title(f"Gaussian filter with s={S}, sigma_s={SIGMA_S} for {path}")
-        plt.imshow(filtered_img)
+        plt.imshow(gaussian_filtered_img)
         plt.show()
 
     # Programmieraufgabe 1.3
