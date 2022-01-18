@@ -7,7 +7,7 @@ Implementation of:
 - Gaussian filter
 - Bilateral gaussian filter
 
-## Newton's mthod
+## Newton's method
 Implementation of newton's method to solve:
 - R -> R equation
 - R^2 -> R^2 equations
