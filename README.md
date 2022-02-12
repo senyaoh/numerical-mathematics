@@ -15,3 +15,10 @@ Implementation of newton's method to solve:
 - z^5 = 1
 - R^2 -> R optimization
 - Mandelbrot set
+
+## Spline Interpolation
+Implementation of:
+- Natural Cubic Spline
+- Hermite Cubic Spline
+- Natural Spline Curve for R^2
+- Hermite Spline Curve for R^2
